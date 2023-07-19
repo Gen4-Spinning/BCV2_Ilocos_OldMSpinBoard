@@ -31,6 +31,7 @@ struct State
 	int waitTrunkDelayTime;
 	int saveSettingsOnPause;
 	int saveCurrentLength;
+	int lengthOverTimer;
 };
 
 struct CardingSettings
@@ -44,7 +45,7 @@ struct CardingSettings
     float conveyorSpeed;
     int trunkDelay;
     int lengthLimit;
-	  float lengthCorrection;
+	float lengthCorrection;
 };
 
 struct Diagnostics

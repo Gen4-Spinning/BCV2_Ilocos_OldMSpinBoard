@@ -149,6 +149,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			   currentLength = currentLength + deliverySpeed_perSec;
 			   currentLength_corrected = currentLength * csp.lengthCorrection;
 		}
+		if (lengthOver){
+			S.lengthOverTimer += 1;
+		}
 	}
 		
    if (htim->Instance==TIM6){

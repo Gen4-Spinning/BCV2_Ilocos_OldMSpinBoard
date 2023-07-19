@@ -84,16 +84,21 @@ void RunState(void)
 				S.runMode = HMI_RUN_RAMPUP;
 			}
 
-			if (S.runMode == HMI_RUN_PIECING){
-				TowerLamp(GREEN_OFF); // green and amber
-				TowerLamp(RED_ON);
+			if (lengthOver == 0){
+				if (S.runMode == HMI_RUN_PIECING){
+					TowerLamp(GREEN_OFF); // green and amber
+					TowerLamp(RED_ON);
+					TowerLamp(AMBER_OFF);
+				}
+				else{
+					TowerLamp(GREEN_OFF); // only green
+					TowerLamp(RED_ON);
+					TowerLamp(AMBER_ON);
+				}
+			}else{
+				TowerLamp(GREEN_OFF);
+				TowerLamp(RED_OFF);
 				TowerLamp(AMBER_OFF);
-			}
-			else{
-				TowerLamp(GREEN_OFF); // only green
-				TowerLamp(RED_ON);
-				TowerLamp(AMBER_ON);
-
 			}
 						
 		  // check if target Rpm is reached by cyl and beater, and switch on the others
@@ -106,6 +111,17 @@ void RunState(void)
 			  }
 
 			lengthOver = LengthOverCheck(); //goes to pause
+			if (lengthOver == 1){
+				//for 5 seconds blink like its over
+				if (S.lengthOverTimer < 10){
+					//just wait till its over
+				}else{
+					S.lengthOverTimer = 0;
+					currentLength  = 0;
+					currentLength_corrected = 0;
+					lengthOver = 0;
+				}
+			}
 
 			//Check for User KeyPress to take machine into Pause State
 			keyPress = Pushbutton();
@@ -130,11 +146,11 @@ void RunState(void)
 					 S.errmotorFault = NO_VAR;
 					 S.errVal = NO_FLOAT_VAR;
 					}
-				else if (lengthOver == 1){
+				/*else if (lengthOver == 1){
 					S.errStopReason = ERR_LENGTHOVER;
 					S.errmotorFault = NO_VAR;
 					S.errVal = NO_FLOAT_VAR;
-				}
+				}*/
 				else{
 					 S.errStopReason = ERR_USER_PAUSE;
 					 S.errmotorFault = NO_VAR;
@@ -197,38 +213,6 @@ void RunState(void)
 					S.ductOn = 0;
 				}
 			}
-
-
-
-			/*if (S.ductOn == 1){				//Switching feed motors off after trunk Delay
-				if((S.switchOffFeed == 0) &&(dontComeIn == 0)){
-					S.oneSecTimer = 0;
-					dontComeIn = 1;
-					S.waitTrunkDelayTime = 1;
-				}
-				if ((S.oneSecTimer >= csp.trunkDelay) && ( S.waitTrunkDelayTime == 1)){
-					S.ductOn = 0;
-					ResetFeedMotors();
-					S.waitTrunkDelayTime = 0;
-				  dontComeIn = 0;
-				}
-			}
-
-			//switching on if the sensor is blocked.
-			if (S.ductOn == 0){  // if the duct is off
-					if((S.switchOffFeed == 1)&& (dontComeIn == 0)){
-						S.oneSecTimer = 0;
-						S.waitTrunkDelayTime = 1;
-						dontComeIn = 1;
-					}
-					if ((S.oneSecTimer >= csp.trunkDelay) && ( S.waitTrunkDelayTime == 1) ) {
-						S.ductOn = 1;
-						S.waitTrunkDelayTime = 0;
-						dontComeIn = 0;
-					}
-			}
-			*/
-
 						/* Disabled
 						if (S.runMode == HMI_RUN_NORMAL)// only look for sliver cut in normal running
 						{
